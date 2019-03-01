@@ -30,7 +30,7 @@ class Field(object):
             self.bitsize = enum.bitsize
 
         elif enumerators is not None:
-            self.enum = FieldEnum(name, enumerators)
+            self.enum = FieldEnum(name, [name + "_" + e for e in enumerators])
             self.bitsize = self.enum.bitsize
 
         else:
@@ -48,7 +48,7 @@ class Field(object):
             return self.enum.name
 
     def __repr__(self):
-        return "{} ({}): off={}, size={}".format(self.name, self.field_type, self.offset, self.bitsize)
+        return "Field{{ {} ({}): off={}, size={} {}}}".format(self.name, self.field_type, self.offset, self.bitsize, "enum={}".format(self.enum) if self.enum is not None else "")
 
 class Node(object):
     def __init__(self, common_enums, parent, name, subcat=None, children=None, fields=None, senders=None):
@@ -77,15 +77,16 @@ class Node(object):
         return self._repr()
 
     def _repr(self, level=0):
-        txt = self.name + ":: "
+        txt = "node:: " + self.name + ": "
         if self.subcat is not None:
-            txt += "[" + str(self.subcat) + "] "
+            txt += "SubCat[" + str(self.subcat) + "] "
 
         if len(self.senders) > 0:
-            txt += "; Senders(" + ", ".join(self.senders) + ")  "
+            txt += " Sender[" + ", ".join(self.senders) + "]  "
 
         if self.fields is not None:
-            txt += ", ".join("{"+str(f)+"}" for f in self.fields)
+            txt += "\n"
+            txt += "\n".join((1+level)*"\t"+str(f) for f in self.fields)
 
         
 
