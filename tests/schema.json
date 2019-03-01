@@ -1,0 +1,88 @@
+{
+    "name":"Farm",
+    "endpoints":["Master", "Slave"],
+    "common_enums":[
+        {"name":"SpeedUnit", "enumerators":["Knot", "KmPerH"]}
+    ],
+
+    "common_fields":[
+        {"name": "Address", "short_name":"Ad", "bitsize":4}
+    ],
+
+    "nodes":{
+        "name":"MsgType", 
+        "children":[
+            {
+                "name":"Measure",
+                "children":[
+                    {
+                        "name":"Temp",
+                        "subcat":["Night", "Day"],
+                        "senders":["Slave"],
+                        "fields":[
+                            {"name":"ID", "short_name":"ID", "bitsize":4},
+                            {"name":"Unit", "short_name":"Un", "bitsize":1, "enumerators":["Celsus", "Fahrenheit"]},
+                            {"name":"Value", "short_name":"Va", "bitsize":8}
+                        ]
+                    },
+                    {
+                        "name":"Humidity",
+                        "senders":["Slave"],
+                        "fields":[
+                            {"name":"ID", "short_name":"ID", "bitsize":4},
+                            {"name":"Value", "short_name":"Va", "bitsize":8}
+                        ]
+                    },
+                    {
+                        "name":"Windspeed",
+                        "senders":["Slave"],
+                        "fields":[
+                            {"name":"ID", "short_name":"ID", "bitsize":4},
+                            {"name":"Value", "short_name":"Va", "bitsize":14},
+                            {"name":"Unit", "short_name":"Un", "enum_name":"SpeedUnit"}
+                        ]
+                    },
+                    {
+                        "name":"Robotspeed",
+                        "senders":["Slave"],
+                        "fields":[
+                            {"name":"ID", "short_name":"ID", "bitsize":4},
+                            {"name":"Value", "short_name":"Va", "bitsize":14},
+                            {"name":"Unit", "short_name":"Un", "enum_name":"SpeedUnit"}
+                        ]
+                    }
+                ]
+            },
+
+            {
+                "name":"Order",
+                "children":[
+                    {
+                        "name":"WaterPump",
+                        "senders":["Master"],
+                        "fields":[
+                            {"name":"ID", "short_name":"ID", "bitsize":2},
+                            {"name":"Status", "short_name":"St", "enumerators":["On", "Off"]}
+                        ]
+                    },
+                    {
+                        "name":"Fan",
+                        "senders":["Master"],
+                        "fields":[
+                            {"name":"ID", "short_name":"ID", "bitsize":2},
+                            {"name":"Value", "short_name":"Va", "bitsize":7}
+                        ]
+                    },
+                    {
+                        "name":"Light",
+                        "senders":["Master"],
+                        "fields":[
+                            {"name":"Type", "short_name":"Ty", "enumerators":["GreenHouse1", "Outside", "Cellar", "MushroomRoom"]},
+                            {"name":"Value", "short_name":"Va", "bitsize":8}
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
