@@ -27,6 +27,6 @@ class Protocol(object):
             else:
                 self.common_fields.append(Field(**cf))
 
+        self.root_node = Node(self.common_enums, self, **source_schema['nodes'])
 
-        print self.common_enums
-        print self.common_fields
+        print self.root_node

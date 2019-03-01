@@ -18,6 +18,8 @@ class FieldEnum(object):
 
 class Field(object):
     def __init__(self, name, short_name, offset=None, bitsize=None, enumerators=None, enum=None):
+        assert(enum is None or isinstance(enum, FieldEnum))
+        
         self.name = name
         self.short_name = short_name
         
@@ -46,22 +48,51 @@ class Field(object):
             return self.enum.name
 
     def __repr__(self):
-        return "{} | {} ({}): off={}, size={}".format(self.name, self.short_name, self.field_type, self.offset, self.bitsize)
+        return "{} ({}): off={}, size={}".format(self.name, self.field_type, self.offset, self.bitsize)
 
 class Node(object):
-    def __init__(self, subcat=None, children=None, fields=None, senders=None):
-        assert (isinstance(subcat, Field) or subcat is None)
-        assert (children is None or all([isinstance(c, Node) for c in children]))
-        assert (fields is None or all([isinstance(f, Field) for f in fields]))
-        
+    def __init__(self, common_enums, parent, name, subcat=None, children=None, fields=None, senders=None):
+        self.name = name
+
         self.parent = None
-        self.subcat = subcat
+        self.subcat = Field(name, name[0:1], enumerators=subcat) if subcat is not None else None
 
-        self.children = children if children is not None else []
+        self.children = [Node(common_enums, self, **na) for na in children] if children is not None else []
+        
+        # self.fields = [Field(**fa) for fa in fields] if fields is not None else []
+        self.fields = None
+        if fields is not None:
+            self.fields = []
+            for fa in fields:
+                if 'enum_name' in fa:
+                    fa2 = {k:fa[k] for k in fa if k != 'enum_name'}
+                    fa2['enum'] = common_enums[fa['enum_name']]
+                    fa = fa2
+                self.fields.append(Field(**fa))
 
-        self.fields = fields if fields is not None else []
 
         self.senders = senders if senders is not None else []
+
+    def __repr__(self):
+        return self._repr()
+
+    def _repr(self, level=0):
+        txt = self.name + ":: "
+        if self.subcat is not None:
+            txt += "[" + str(self.subcat) + "] "
+
+        if len(self.senders) > 0:
+            txt += "; Senders(" + ", ".join(self.senders) + ")  "
+
+        if self.fields is not None:
+            txt += ", ".join("{"+str(f)+"}" for f in self.fields)
+
+        
+
+        for c in self.children:
+            txt += "\n\t" + level*"\t" + str(c._repr(level+1))
+
+        return txt
 
 
 
