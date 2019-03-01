@@ -35,7 +35,8 @@ def validate_protocol_schema(protocol_schema):
                     'name':{'type':'string',"required":True},
                     'short_name':{'type':'string',"required":True},
                     'bitsize':{'type':'integer',"required":False},
-                    'enumerators':{'type':'list',"required":False, 'schema': {'type': 'string'}}
+                    'enumerators':{'type':'list',"required":False, 'schema': {'type': 'string'}},
+                    'enum_name':{'type':'string',"required":False}
                 }
             }
         },
