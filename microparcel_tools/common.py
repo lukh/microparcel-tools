@@ -51,13 +51,13 @@ class Field(object):
         return "Field{{ {} ({}): off={}, size={} {}}}".format(self.name, self.field_type, self.offset, self.bitsize, "enum={}".format(self.enum) if self.enum is not None else "")
 
 class Node(object):
-    def __init__(self, common_enums, parent, name, subcat=None, children=None, fields=None, senders=None):
+    def __init__(self, common_enums, all_fields, parent, name, subcat=None, children=None, fields=None, senders=None):
         self.name = name
 
         self.parent = None
         self.subcat = Field(name, name[0:1], enumerators=subcat) if subcat is not None else None
 
-        self.children = [Node(common_enums, self, **na) for na in children] if children is not None else []
+        self.children = [Node(common_enums, all_fields, self, **na) for na in children] if children is not None else []
         
         # self.fields = [Field(**fa) for fa in fields] if fields is not None else []
         self.fields = None
@@ -68,7 +68,10 @@ class Node(object):
                     fa2 = {k:fa[k] for k in fa if k != 'enum_name'}
                     fa2['enum'] = common_enums[fa['enum_name']]
                     fa = fa2
-                self.fields.append(Field(**fa))
+
+                f = Field(**fa)
+                self.fields.append(f)
+                all_fields.append(f)
 
 
         self.senders = senders if senders is not None else []
