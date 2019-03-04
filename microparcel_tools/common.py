@@ -98,27 +98,12 @@ class Node(object):
 
         self.senders = senders if senders is not None else []
 
-    def __repr__(self):
-        return self._repr()
 
-    def _repr(self, level=0):
-        txt = "node:: " + self.name + ": "
-        if self.subcat is not None:
-            txt += "SubCat[" + str(self.subcat) + "] "
+    def leafs(self, sender):
+        if self.children is None and sender in self.senders:
+            yield self
 
-        if len(self.senders) > 0:
-            txt += " Sender[" + ", ".join(self.senders) + "]  "
-
-        if self.fields is not None:
-            txt += "\n"
-            txt += "\n".join((1+level)*"\t"+str(f) for f in self.fields)
-
-        
-
-        for c in self.children:
-            txt += "\n\t" + level*"\t" + str(c._repr(level+1))
-
-        return txt
-
-
-
+        elif self.children is not None:
+            for c in self.children:
+                for leaf in c.leafs(sender):
+                    yield leaf

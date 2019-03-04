@@ -21,7 +21,7 @@
                         "senders":["Slave"],
                         "fields":[
                             {"name":"ID", "short_name":"ID", "bitsize":4},
-                            {"name":"Unit", "short_name":"Un", "bitsize":1, "enumerators":["Celsus", "Fahrenheit"]},
+                            {"name":"Unit", "short_name":"Un", "enumerators":["Celsus", "Fahrenheit"]},
                             {"name":"Value", "short_name":"Va", "bitsize":8}
                         ]
                     },
