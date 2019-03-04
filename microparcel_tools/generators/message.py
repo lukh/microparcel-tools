@@ -1,7 +1,7 @@
 message_template = """\
 #include "microparcel.h"
 
-class {{ protocol.name }} {
+class {{ protocol.name }}: public microparcel::Message<{{ protocol.bytesize}}> {
     // --- Common enums ---
     {% for ce in protocol.common_enums.values() %}
     // {{ ce.name }}
