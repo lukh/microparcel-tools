@@ -30,5 +30,3 @@ class Protocol(object):
         # nodes
         self.fields = []
         self.root_node = Node(self.common_enums, self.fields, self, **source_schema['nodes'])
-
-        print self.root_node

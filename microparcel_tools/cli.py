@@ -11,9 +11,12 @@ from jsoncomment import JsonComment
 from tools import validate_protocol_schema
 from microparcel_tools import Protocol
 
+from generators import message
+
 @click.command()
 @click.argument('schema_file')
-def main(schema_file):
+@click.option('--cxx', help="CXX Folder destination")
+def main(schema_file, cxx=None):
     """Generate serialization/deserialization code from schema"""
 
     click.echo('Working on file: ' + schema_file)
@@ -39,6 +42,13 @@ def main(schema_file):
 
     # Build the protocol
     protocol = Protocol(schema)
+
+    # build CXX
+    if cxx is not None:
+        if not os.path.isdir(cxx):
+            click.echo('CXX Dest not found')
+            return -1
+        message.make_message_cxx(protocol, cxx)
 
     return 0
 
