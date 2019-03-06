@@ -194,10 +194,12 @@ class TestMicroparcel_tools(unittest.TestCase):
 
         p = mp.Protocol(schema)
 
+        self.assertEqual(p.bytesize, 2)
 
         self.assertEqual(p.fields[0].name, "Root")
         self.assertEqual(p.fields[0].offset, 0)
         self.assertEqual(p.fields[0].bitsize, 2)
+        self.assertEqual(p.fields[0].enum.enumerators, ["Message1", "Message2", "Message3"])
         
         self.assertEqual(p.fields[1].name, "Message1Field1")
         self.assertEqual(p.fields[1].offset, 2)
@@ -218,6 +220,8 @@ class TestMicroparcel_tools(unittest.TestCase):
         self.assertEqual(p.fields[5].name, "Message3")
         self.assertEqual(p.fields[5].offset, 2)
         self.assertEqual(p.fields[5].bitsize, 1)
+        self.assertEqual(p.fields[5].enum.enumerators, ["SubMessage1", "SubMessage2"])
+
 
         self.assertEqual(p.fields[6].name, "SubMessage1Field1")
         self.assertEqual(p.fields[6].offset, 3)
@@ -235,9 +239,58 @@ class TestMicroparcel_tools(unittest.TestCase):
         self.assertEqual(p.fields[9].offset, 8)
         self.assertEqual(p.fields[9].bitsize, 3)
 
-    # def test_standard_small_fields(self):
+
+
+    def test_subcat(self):
+        schema = {
+            "name":"Test",
+            "endpoints":["Master", "Slave"],
+            "common_enums":[],
+            "common_fields":[],
+            "nodes":{
+                "name":"Root", 
+                "children":[
+                    {
+                        "name":"Message1",
+                        "subcat":["Sub1", "Sub2", "Sub3"],
+                        "senders":["Slave"],
+                        "fields":[
+                            {"name":"Field1", "short_name":"F1", "bitsize":4},
+                            {"name":"Field2", "short_name":"F2", "bitsize":4},
+                            {"name":"Field3", "short_name":"F3", "bitsize":4},
+                            {"name":"Field4", "short_name":"F4", "bitsize":4},
+                        ]
+                    },
+                ]
+            }
+        }
+
+        p = mp.Protocol(schema)
+        self.assertEqual(p.bytesize, 3)
+
+        self.assertEqual(p.fields[0].name, "Root")
+        self.assertEqual(p.fields[0].offset, 0)
+        self.assertEqual(p.fields[0].bitsize, 1)
+
+        self.assertEqual(p.fields[1].name, "Message1")
+        self.assertEqual(p.fields[1].offset, 1)
+        self.assertEqual(p.fields[1].bitsize, 2)
+        self.assertEqual(p.fields[1].enum.enumerators, ["Sub1", "Sub2", "Sub3"])
+
+        self.assertEqual(p.fields[2].offset, 2+1)
+        self.assertEqual(p.fields[3].offset, 2+5)
+        self.assertEqual(p.fields[4].offset, 2+9)
+        self.assertEqual(p.fields[5].offset, 2+13)
+
+        self.assertEqual(p.fields[2].bitsize, 4)
+        self.assertEqual(p.fields[3].bitsize, 4)
+        self.assertEqual(p.fields[4].bitsize, 4)
+        self.assertEqual(p.fields[5].bitsize, 4)
+
+
+    # def test_common_fields(self):
     #     schema = {
-    #         "name":"Farm",
+    #         "name":"Test",
     #         "endpoints":["Master", "Slave"],
     #         "common_enums":[
     #             {"name":"SpeedUnit", "enumerators":["Knot", "KmPerH"]}
