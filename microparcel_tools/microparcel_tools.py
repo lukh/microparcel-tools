@@ -29,8 +29,7 @@ class Protocol(object):
                 self.common_fields.append(Field(**cf))
 
         # nodes
-        self.fields = []
-        self.root_node = Node(self.common_enums, self.fields, None, **source_schema['nodes'])
+        self.root_node = Node(self.common_enums, None, **source_schema['nodes'])
 
 
         # build offsets and bytesize...
@@ -38,6 +37,26 @@ class Protocol(object):
         self.build()
 
     def build(self):
+        # populate fields
+        self.fields = []
+        def add_node_field(fields_list, node):
+            if node.subcat is not None:
+                fields_list.append(node.subcat)
+
+            if node.fields is not None:
+                for f in node.fields:
+                    fields_list.append(f)
+
+            if node.children_field is not None:
+                fields_list.append(node.children_field)
+                for c in node.children:
+                    add_node_field(fields_list, c)
+
+        add_node_field(self.fields, self.root_node)
+
+
+
+        ## set offset
         curr_off = 0
         # build common fields
         for cf in self.common_fields:
