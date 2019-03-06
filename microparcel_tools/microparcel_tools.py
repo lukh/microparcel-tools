@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
+import math
 
-from common import *
+from common import FieldEnum, Field, Node
 from tools import validate_protocol_schema
 
 class Protocol(object):
@@ -29,4 +30,25 @@ class Protocol(object):
 
         # nodes
         self.fields = []
-        self.root_node = Node(self.common_enums, self.fields, self, **source_schema['nodes'])
+        self.root_node = Node(self.common_enums, self.fields, None, **source_schema['nodes'])
+
+
+        # build offsets and bytesize...
+        self.bytesize = 0
+        self.build()
+
+    def build(self):
+        curr_off = 0
+        # build common fields
+        for cf in self.common_fields:
+            cf.offset = curr_off
+            curr_off += cf.bitsize
+
+        offsets = []
+        for sender in self.endpoints:
+            for leaf in self.root_node.leafs(sender):
+                off = leaf.build(curr_off)
+                offsets.append(off)
+
+        off_max = max(offsets)
+        self.bytesize = int(math.ceil(off_max / 8.0))
