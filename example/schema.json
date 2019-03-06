@@ -6,7 +6,8 @@
     ],
 
     "common_fields":[
-        {"name": "Address", "short_name":"Ad", "bitsize":4}
+        {"name": "Address", "short_name":"Ad", "bitsize":4},
+        {"name": "ProtocolVersion", "short_name":"Pv", "bitsize":4}
     ],
 
     "nodes":{
@@ -16,7 +17,18 @@
                 "name":"Measure",
                 "children":[
                     {
-                        "name":"Temp",
+                        "name":"Windspeed",
+                        "senders":["Slave"],
+                        "fields":[
+                            {"name":"ID", "short_name":"ID", "bitsize":4},
+                            {"name":"Unit", "short_name":"Un", "enum_name":"SpeedUnit"},
+                            {"name":"Value", "short_name":"Va", "bitsize":12},
+                            {"name":"VeryLongUselessValue", "short_name":"Vl", "bitsize":12},
+                            {"name":"SmallValue", "short_name":"Sv", "bitsize":3}
+                        ]
+                    },
+                    {
+                        "name":"Temperature",
                         "subcat":["Night", "Day"],
                         "senders":["Slave"],
                         "fields":[
@@ -31,15 +43,6 @@
                         "fields":[
                             {"name":"ID", "short_name":"ID", "bitsize":4},
                             {"name":"Value", "short_name":"Va", "bitsize":8}
-                        ]
-                    },
-                    {
-                        "name":"Windspeed",
-                        "senders":["Slave"],
-                        "fields":[
-                            {"name":"ID", "short_name":"ID", "bitsize":4},
-                            {"name":"Value", "short_name":"Va", "bitsize":14},
-                            {"name":"Unit", "short_name":"Un", "enum_name":"SpeedUnit"}
                         ]
                     },
                     {
