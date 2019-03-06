@@ -34,9 +34,7 @@ class Protocol(object):
 
         # build offsets and bytesize...
         self.bytesize = 0
-        self.build()
 
-    def build(self):
         # populate fields
         self.fields = []
         def add_node_field(fields_list, node):
