@@ -46,6 +46,7 @@ class {{ protocol.name }}Msg: public microparcel::Message<{{ protocol.bytesize}}
     {% endif %}
     {{f.field_type}} get{{ f.name }}() { return ({{f.field_type}}) get<{{ f.field_bytetype }}, {{f.offset}}, {{f.bitsize}}>(); }
     void set{{ f.name }}({{ f.field_type }} in_{{f.name.lower() }}) { set<{{ f.field_bytetype }}, {{f.offset}}, {{f.bitsize}}>(in_{{f.name.lower() }}); }
+    
     {% endfor %}
 };
 

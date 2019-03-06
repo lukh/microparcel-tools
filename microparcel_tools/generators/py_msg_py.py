@@ -38,6 +38,7 @@ class {{ protocol.name }}Msg(mp.Message):
         {% else %}
         self.set({{cf.offset}}, {{cf.bitsize}}, in_{{ cf.name.lower() }})
         {% endif %}
+
     {% endfor %}
 
 
@@ -65,6 +66,7 @@ class {{ protocol.name }}Msg(mp.Message):
         {% else %}
         self.set({{f.offset}}, {{f.bitsize}}, in_{{ f.name.lower() }})
         {% endif %}
+        
     {% endfor %}
 
 """
