@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/microparcel_tools/cli.py",
             "console": "integratedTerminal",
-            "args":["example/schema.json", "--cxx", "example/cxx_out"],
+            "args":["example/schema.json", "--cxx", "example/cxx_out",  "--py", "example/py_out"],
             "pythonPath": "python"
         }
     ]

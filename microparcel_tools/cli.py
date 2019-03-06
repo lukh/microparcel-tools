@@ -14,7 +14,7 @@ from microparcel_tools import Protocol
 
 from generators import message
 
-def main(schema_file, cxx=None):
+def main(schema_file, cxx=None, py=None):
     """Generate serialization/deserialization code from schema"""
     logging.info('Working on file: ' + schema_file)
 
@@ -47,6 +47,13 @@ def main(schema_file, cxx=None):
             return -1
         message.make_message_cxx(protocol, cxx)
 
+    # build CXX
+    if py is not None:
+        if not os.path.isdir(py):
+            logging.info('PY Dest not found')
+            return -1
+        message.make_message_py(protocol, py)
+
     return 0
 
 
@@ -54,9 +61,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='microparcel parser and message generation tool')
     parser.add_argument('schema_file', type=str, help='schema file, in json format')
     parser.add_argument('--cxx', help='C++ output folder')
+    parser.add_argument('--py', help='C++ output folder')
 
     args = parser.parse_args()
-    ret = main(args.schema_file, cxx=args.cxx)  # pragma: no cover
+    ret = main(args.schema_file, cxx=args.cxx, py=args.py)  # pragma: no cover
 
     if ret != 0:
         sys.exit(ret)
