@@ -139,6 +139,17 @@ class Node(object):
         self.senders = senders if senders is not None else []
 
 
+    def parents(self):
+        """
+            yield parent recursively, starting from itself, and avoiding the root node...
+        """
+        if self.parent is not None:
+            for p in self.parent.parents():
+                yield p
+            yield self
+
+
+
     def leafs(self, sender=None):
         """
             Yield leaf recursively. 

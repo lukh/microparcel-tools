@@ -12,7 +12,7 @@ from jsoncomment import JsonComment
 from tools import validate_protocol_schema
 from microparcel_tools import Protocol
 
-from generators import message
+from generators import message, router
 
 def main(schema_file, cxx=None, py=None):
     """Generate serialization/deserialization code from schema"""
@@ -46,6 +46,9 @@ def main(schema_file, cxx=None, py=None):
             logging.info('CXX Dest not found')
             return -1
         message.make_message_cxx(protocol, cxx)
+
+        for r in protocol.endpoints:
+            router.make_router_cxx(protocol, r, cxx)
 
     # build CXX
     if py is not None:

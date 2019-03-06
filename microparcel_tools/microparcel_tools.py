@@ -69,3 +69,5 @@ class Protocol(object):
 
         off_max = max(offsets)
         self.bytesize = int(math.ceil(off_max / 8.0))
+
+
