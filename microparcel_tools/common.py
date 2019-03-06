@@ -1,3 +1,5 @@
+from math import ceil
+
 class FieldEnum(object):
     def __init__(self, name, enumerators):
         self.name = name
@@ -93,7 +95,7 @@ class Field(object):
         return txt
 
 class Node(object):
-    def __init__(self, common_enums, all_fields, parent, name, subcat=None, children=None, fields=None, senders=None):
+    def __init__(self, common_enums, parent, name, subcat=None, children=None, fields=None, senders=None):
         assert (parent is None or isinstance(parent, Node)), "Parent of {} must be a Node or None".format(name)
         assert (subcat is None or isinstance(subcat, list)), "Subcat of {} must be None or a list of string".format(name)
         assert (children is None) ^ (fields is None), "Node {} can't have both fields and children".format(name)
@@ -101,7 +103,24 @@ class Node(object):
         self.name = name
 
         self.parent = parent
-        
+
+        # link to the children
+        self.children = None
+        self.children_field = None
+        if children is not None:
+            if len(children) > 255:
+                raise ValueError("Can't have more that 255 children in {}".format(name))
+            self.children = [Node(common_enums, self, **na) for na in children]
+            self.children_field = Field(name, name[0:2], enumerators=[c.name for c in self.children])
+
+
+        self.subcat = None
+        if subcat is not None:
+            if len(subcat) > 255:
+                raise ValueError("Can't have more that 255 values in {} subcat".format(name))
+            self.subcat = Field(name, name[0:2], enumerators=subcat)
+
+        # data fields
         self.fields = None
         if fields is not None:
             self.fields = []
@@ -115,25 +134,6 @@ class Node(object):
 
                 f = Field(**fa)
                 self.fields.append(f)
-                all_fields.append(f)
-
-
-        self.subcat = None
-        if subcat is not None:
-            if len(subcat) > 255:
-                raise ValueError("Can't have more that 255 values in {} subcat".format(name))
-            self.subcat = Field(name, name[0:2], enumerators=subcat)
-            all_fields.append(self.subcat)
-
-        # link to the children
-        self.children = None
-        self.children_field = None
-        if children is not None:
-            if len(children) > 255:
-                raise ValueError("Can't have more that 255 children in {}".format(name))
-            self.children = [Node(common_enums, all_fields, self, **na) for na in children]
-            self.children_field = Field(name, name[0:2], enumerators=[c.name for c in self.children])
-            all_fields.append(self.children_field)
 
 
         self.senders = senders if senders is not None else []
@@ -163,18 +163,82 @@ class Node(object):
 
         # add the children field
         if self.children_field is not None:
+            if self.children_field.bitsize > 8:
+                raise ValueError("children_field {} of {} is too large: {}>8".format(self.children_field.name, self.name, self.children_field.bitsize))
             self.children_field.offset = current_offset
             current_offset += self.children_field.bitsize
 
-        #data fields
-        if self.fields is not None:
-            for f in self.fields:
-                f.offset = current_offset
-                current_offset += f.bitsize
-
         # sub cat field
         if self.subcat is not None:
+            if self.subcat.bitsize > 8:
+                raise ValueError("subcat {} of {} is too large: {}>8".format(self.subcat.name, self.name, self.subcat.bitsize))
             self.subcat.offset = current_offset
             current_offset += self.subcat.bitsize
+        
+        big_fields_offset = 0
+        #data fields
+        if self.fields is not None:
+            big_fields = [f for f in self.fields if f.bitsize > 8]
+            small_fields = [f for f in self.fields if f.bitsize <= 8]
 
-        return current_offset
+
+            big_fields_offset = current_offset
+
+
+            if len( big_fields ) == 0:
+                for f in small_fields:
+                    f.offset = current_offset
+                    current_offset += f.bitsize
+
+            else:
+                # place the big one byte-aligned
+                for f in big_fields:
+                    # round up the offset
+                    big_fields_offset = int ( 8 * ceil(big_fields_offset / 8.0) )
+                    f.offset = big_fields_offset
+                    big_fields_offset += f.bitsize
+
+                # trying to fit the small between the last small and the first big.
+                remaining_small_fields = []
+                first_bf = big_fields[0]
+                for sf in small_fields:
+                    if sf.bitsize <= (first_bf.offset - current_offset):
+                        sf.offset = current_offset
+                        current_offset += sf.bitsize
+                    else:
+                        remaining_small_fields.append(sf)
+
+                if len( big_fields ) > 1:
+                    leftover_fields = []
+                    local_curr_offs = []
+                    for bf_idx in range(1, len(big_fields), 1):
+                        bf0 = big_fields[bf_idx-1]
+
+                        local_curr_offs.append(bf0.offset + bf0.bitsize)
+
+                    for sf in remaining_small_fields:
+                        for curr_off_idx, bf_idx in enumerate(range(1, len(big_fields), 1)):
+                            bf1 = big_fields[bf_idx]
+
+                            if sf.bitsize <= (bf1.offset - local_curr_offs[curr_off_idx]):
+                                sf.offset = local_curr_offs[curr_off_idx]
+                                local_curr_offs[curr_off_idx] += sf.bitsize
+                                break
+
+                        else:
+                            leftover_fields.append(sf)
+
+
+                    for f in leftover_fields:
+                        f.offset = big_fields_offset
+                        big_fields_offset += f.bitsize
+
+                else: # == 1
+                    for f in remaining_small_fields:
+                        f.offset = big_fields_offset
+                        big_fields_offset += f.bitsize
+
+
+
+
+        return max(current_offset, big_fields_offset)
