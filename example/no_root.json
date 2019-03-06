@@ -1,0 +1,16 @@
+{
+    "name":"Test",
+    "endpoints":["Master", "Slave"],
+    "common_enums":[],
+    "common_fields":[],
+    "nodes":{
+        "name":"Message1",
+        "senders":["Slave"],
+        "fields":[
+            {"name":"Field1", "short_name":"F1", "bitsize":4},
+            {"name":"Field2", "short_name":"F2", "bitsize":4},
+            {"name":"Field3", "short_name":"F3", "bitsize":4},
+            {"name":"Field4", "short_name":"F4", "bitsize":4},
+        ]
+    }
+}
