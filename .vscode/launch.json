@@ -11,6 +11,7 @@
             "program": "${workspaceFolder}/microparcel_tools/cli.py",
             "console": "integratedTerminal",
             "args":["tests/schema.json", "--cxx", "tests/cxx_out"],
+            "pythonPath": "python"
         }
     ]
 }
