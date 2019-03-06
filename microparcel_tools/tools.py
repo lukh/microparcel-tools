@@ -41,12 +41,8 @@ def validate_protocol_schema(protocol_schema):
             }
         },
         "nodes":{
-            "type":"dict", "required":True,
-            'schema':{
-                'name':{'type':'string',"required":True},
-                'children':{'type':'list'}
-            }
-        },
+            "type":"dict", "required":True
+        }
     }
 
     validator = cerberus.Validator(sch)
