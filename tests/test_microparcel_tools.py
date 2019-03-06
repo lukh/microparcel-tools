@@ -333,3 +333,121 @@ class TestMicroparcel_tools(unittest.TestCase):
         self.assertEqual(p.fields[1].name, "RootField2")
         self.assertEqual(p.fields[1].offset, 15)
         self.assertEqual(p.fields[1].bitsize, 2)
+
+
+    def test_standard_big_fields_no_root(self):
+        schema = {
+            "name":"Test",
+            "endpoints":["Master", "Slave"],
+            "common_enums":[],
+            "common_fields":[],
+            "nodes":{
+                "name":"Message1",
+                "senders":["Slave"],
+                "fields":[
+                    {"name":"Field1", "short_name":"F1", "bitsize":4},
+                    {"name":"Field2", "short_name":"F2", "bitsize":8},
+                    {"name":"Field3", "short_name":"F3", "bitsize":13},
+                    {"name":"Field4", "short_name":"F4", "bitsize":3},
+                ]
+            }
+        }
+
+        p = mp.Protocol(schema)
+
+        self.assertEqual(p.bytesize, 4)
+
+        self.assertEqual(p.fields[0].offset, 13)
+        self.assertEqual(p.fields[0].bitsize, 4)
+
+        self.assertEqual(p.fields[1].offset, 17)
+        self.assertEqual(p.fields[1].bitsize, 8)
+
+        self.assertEqual(p.fields[2].offset, 0)
+        self.assertEqual(p.fields[2].bitsize, 13)
+        
+        self.assertEqual(p.fields[3].offset, 25)
+        self.assertEqual(p.fields[3].bitsize, 3)
+
+
+    def test_standard_big_fields_with_inter_no_root(self):
+        schema = {
+            "name":"Test",
+            "endpoints":["Master", "Slave"],
+            "common_enums":[],
+            "common_fields":[],
+            "nodes":{
+                "name":"Message1",
+                "senders":["Slave"],
+                "fields":[
+                    {"name":"Field1", "short_name":"F1", "bitsize":4},
+                    {"name":"Field2", "short_name":"F2", "bitsize":8},
+                    {"name":"Field3", "short_name":"F3", "bitsize":13},
+                    {"name":"Field4", "short_name":"F4", "bitsize":2},
+                    {"name":"Field5", "short_name":"F5", "bitsize":9},
+                    {"name":"Field6", "short_name":"F6", "bitsize":1},
+                ]
+            }
+        }
+
+        p = mp.Protocol(schema)
+
+        self.assertEqual(p.bytesize, 5)
+
+        self.assertEqual(p.fields[0].offset, 25)
+        self.assertEqual(p.fields[0].bitsize, 4)
+
+        self.assertEqual(p.fields[1].offset, 29)
+        self.assertEqual(p.fields[1].bitsize, 8)
+
+        self.assertEqual(p.fields[2].offset, 0)
+        self.assertEqual(p.fields[2].bitsize, 13)
+        
+        self.assertEqual(p.fields[3].offset, 13)
+        self.assertEqual(p.fields[3].bitsize, 2)
+
+        self.assertEqual(p.fields[4].offset, 16)
+        self.assertEqual(p.fields[4].bitsize, 9)
+
+        self.assertEqual(p.fields[5].offset, 15)
+        self.assertEqual(p.fields[5].bitsize, 1)
+
+
+    def test_standard_big_fields_no_root_common(self):
+        schema = {
+            "name":"Test",
+            "endpoints":["Master", "Slave"],
+            "common_enums":[],
+            "common_fields":[
+                {"name":"Common", "short_name":"F1", "bitsize":5},
+
+            ],
+            "nodes":{
+                "name":"Message1",
+                "senders":["Slave"],
+                "fields":[
+                    {"name":"Field1", "short_name":"F1", "bitsize":4},
+                    {"name":"Field2", "short_name":"F2", "bitsize":8},
+                    {"name":"Field3", "short_name":"F3", "bitsize":13},
+                    {"name":"Field4", "short_name":"F4", "bitsize":3},
+                ]
+            }
+        }
+
+        p = mp.Protocol(schema)
+
+        self.assertEqual(p.bytesize, 5)
+        self.assertEqual(p.common_fields[0].offset, 0)
+        self.assertEqual(p.common_fields[0].bitsize, 5)
+
+        self.assertEqual(p.fields[0].offset, 21)
+        self.assertEqual(p.fields[0].bitsize, 4)
+
+        self.assertEqual(p.fields[1].offset, 25)
+        self.assertEqual(p.fields[1].bitsize, 8)
+
+        self.assertEqual(p.fields[2].offset, 8)
+        self.assertEqual(p.fields[2].bitsize, 13)
+        
+        self.assertEqual(p.fields[3].offset, 5)
+        self.assertEqual(p.fields[3].bitsize, 3)
