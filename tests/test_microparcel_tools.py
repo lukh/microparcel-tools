@@ -288,25 +288,48 @@ class TestMicroparcel_tools(unittest.TestCase):
         self.assertEqual(p.fields[5].bitsize, 4)
 
 
-    # def test_common_fields(self):
-    #     schema = {
-    #         "name":"Test",
-    #         "endpoints":["Master", "Slave"],
-    #         "common_enums":[
-    #             {"name":"SpeedUnit", "enumerators":["Knot", "KmPerH"]}
-    #         ],
+    def test_common_fields(self):
+        schema = {
+            "name":"Test",
+            "endpoints":["Master", "Slave"],
+            "common_enums":[
+                {"name":"SpeedUnit", "enumerators":["Knot", "KmPerH"]}
+            ],
 
-    #         "common_fields":[
-    #             {"name": "Address", "short_name":"Ad", "bitsize":4},
-    #             {"name": "ProtocolVersion", "short_name":"Pv", "bitsize":4}
-    #         ],
+            "common_fields":[
+                {"name": "Address", "short_name":"Ad", "bitsize":5},
+                {"name": "ProtocolVersion", "short_name":"Pv", "bitsize":9}
+            ],
 
-    #         "nodes":{
-    #             "name":"MsgType", 
-    #             "children":[
-    #             ]
-    #         }
-    #     }
+            "nodes":{
+                "name":"Root", 
+                "senders":["Slave"],
+                "fields":[
+                    {"name":"Field1", "short_name":"F1", "enum_name":"SpeedUnit"},
+                    {"name":"Field2", "short_name":"F1", "enumerators":["A", "B", "C","D"]},
+                ]
+            }
+        }
 
 
-    #     mp.Protocol(schema)
+        p = mp.Protocol(schema)
+
+        # self.assertEqual(p.bytesize, 3)
+
+
+        self.assertEqual(p.common_fields[0].name, "Address")
+        self.assertEqual(p.common_fields[0].offset, 0)
+        self.assertEqual(p.common_fields[0].bitsize, 5)
+
+        self.assertEqual(p.common_fields[1].name, "ProtocolVersion")
+        self.assertEqual(p.common_fields[1].offset, 5)
+        self.assertEqual(p.common_fields[1].bitsize, 9)
+
+        self.assertEqual(p.fields[0].name, "RootField1")
+        self.assertEqual(p.fields[0].offset, 14)
+        self.assertEqual(p.fields[0].bitsize, 1)
+
+
+        self.assertEqual(p.fields[1].name, "RootField2")
+        self.assertEqual(p.fields[1].offset, 15)
+        self.assertEqual(p.fields[1].bitsize, 2)
