@@ -3,7 +3,8 @@
 """Console script for microparcel_tools."""
 import sys
 import os
-import click
+import argparse
+import logging
 
 import json
 from jsoncomment import JsonComment
@@ -13,17 +14,13 @@ from microparcel_tools import Protocol
 
 from generators import message
 
-@click.command()
-@click.argument('schema_file')
-@click.option('--cxx', help="CXX Folder destination")
 def main(schema_file, cxx=None):
     """Generate serialization/deserialization code from schema"""
-
-    click.echo('Working on file: ' + schema_file)
+    logging.info('Working on file: ' + schema_file)
 
     # validate file exists
     if not os.path.isfile(schema_file):
-        click.echo('File not found')
+        logging.info('File not found')
         return -1
 
     # loading schema from file
@@ -35,9 +32,9 @@ def main(schema_file, cxx=None):
     # validating the schema
     status, msg = validate_protocol_schema(schema)
     if not status:
-        click.echo('Invalid Schema:' + msg)
+        logging.info('Invalid Schema:' + msg)
         return -2
-    click.echo('Schema is valid')
+    logging.info('Schema is valid')
 
 
     # Build the protocol
@@ -46,7 +43,7 @@ def main(schema_file, cxx=None):
     # build CXX
     if cxx is not None:
         if not os.path.isdir(cxx):
-            click.echo('CXX Dest not found')
+            logging.info('CXX Dest not found')
             return -1
         message.make_message_cxx(protocol, cxx)
 
@@ -54,4 +51,13 @@ def main(schema_file, cxx=None):
 
 
 if __name__ == "__main__":
-    sys.exit(main())  # pragma: no cover
+    parser = argparse.ArgumentParser(description='microparcel parser and message generation tool')
+    parser.add_argument('schema_file', type=str, help='schema file, in json format')
+    parser.add_argument('--cxx', help='C++ output folder')
+
+    args = parser.parse_args()
+    ret = main(args.schema_file, cxx=args.cxx)  # pragma: no cover
+
+    if ret != 0:
+        sys.exit(ret)
+
