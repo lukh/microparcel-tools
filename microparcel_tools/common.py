@@ -139,28 +139,35 @@ class Node(object):
         self.senders = senders if senders is not None else []
 
 
-    def parents(self):
+    def parents(self, with_root=False):
         """
             yield parent recursively, starting from itself, and avoiding the root node...
         """
         if self.parent is not None:
-            for p in self.parent.parents():
+            for p in self.parent.parents(with_root=with_root):
                 yield p
             yield self
 
+        elif with_root:
+            yield self
 
+    def need_process(self, sender):
+        if self.children is None and self.fields is not None:
+            return sender not in self.senders
+        if self.children is not None:
+            return any([ c.need_process(sender) for c in self.children ])
 
-    def leafs(self, sender=None):
+    def leafs(self, sender=None, all_but_sender=False):
         """
             Yield leaf recursively. 
             @param sender: yield only leaf of this sender
         """
-        if self.children is None and (sender is None or sender in self.senders):
+        if self.children is None and (sender is None or ((sender in self.senders) ^ all_but_sender)):
             yield self
 
         elif self.children is not None:
             for c in self.children:
-                for leaf in c.leafs(sender):
+                for leaf in c.leafs(sender, all_but_sender):
                     yield leaf
 
 
@@ -253,3 +260,53 @@ class Node(object):
 
 
         return max(current_offset, big_fields_offset)
+
+
+    def text_0(self, bytecount):
+        txt = ""
+        for by in range(bytecount):
+            txt += '|{0:02d} '.format(by)
+            for bit in range(6, -1, -1):
+                txt += '|   '
+            txt += " |"
+
+        return txt
+
+    def text_1(self, bytecount):
+        txt = ""
+        for by in range(bytecount):
+            for bit in range(7, -1, -1):
+                txt += '|{0:02d} '.format(bit)
+            txt += " |"
+
+        return txt
+
+    def text_2(self, bytecount, common_fields):
+        bits_list = ["|   " for i in range(bytecount*8)]
+
+        for cf in common_fields:
+            for idx in range(cf.offset, cf.offset+cf.bitsize):
+                    bits_list[idx] = "|{} ".format(cf.short_name)
+
+        for node in self.parents(with_root=True):
+            if node.children_field is not None:
+                for idx in range(node.children_field.offset, node.children_field.offset+node.children_field.bitsize):
+                    bits_list[idx] = "|{} ".format(node.children_field.short_name)
+            if node.subcat is not None:
+                for idx in range(node.subcat.offset, node.subcat.offset+node.subcat.bitsize):
+                    bits_list[idx] = "|{} ".format(node.subcat.short_name)
+            if node.fields is not None:
+                for f in node.fields:
+                    for idx in range(f.offset, f.offset+f.bitsize):
+                        bits_list[idx] = "|{} ".format(f.short_name)
+
+
+        # invert byte
+        out = []
+        for b_idx in range(bytecount):
+            for b in range(8):
+                out.append(bits_list[(b_idx*8) + (7-b)])
+
+        for b_idx in range(bytecount):
+            out[(8*b_idx) + 7] += " |"
+        return "".join(out)
