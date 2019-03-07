@@ -97,6 +97,7 @@ class {{ protocol.name }}{{ sender }}Router {
 {{ level * "    " }}        case {{ protocol.name }}Msg::{{ node.name }}_{{ c.name }}:
 {{ walk(c, level + 2) }}
 {{ level * "    " }}            break;
+
 {% endfor %}
 \
 {{ level * "    " + "    " }}}
