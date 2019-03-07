@@ -152,6 +152,9 @@ class Node(object):
             yield self
 
     def need_process(self, sender):
+        """
+            returns True if this node or one of its children needs a process method as a sender.
+        """
         if self.children is None and self.fields is not None:
             return sender not in self.senders
         if self.children is not None:
@@ -161,6 +164,7 @@ class Node(object):
         """
             Yield leaf recursively. 
             @param sender: yield only leaf of this sender
+            @param all_but_sender: if True, returns the leafs of all others senders than the one specified
         """
         if self.children is None and (sender is None or ((sender in self.senders) ^ all_but_sender)):
             yield self
