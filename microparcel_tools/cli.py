@@ -45,17 +45,22 @@ def main(schema_file, cxx=None, py=None):
         if not os.path.isdir(cxx):
             logging.info('CXX Dest not found')
             return -1
+
         message.make_message_cxx(protocol, cxx)
 
         for r in protocol.endpoints:
             router.make_router_cxx(protocol, r, cxx)
 
-    # build CXX
+    # build py
     if py is not None:
         if not os.path.isdir(py):
             logging.info('PY Dest not found')
             return -1
+
         message.make_message_py(protocol, py)
+
+        for r in protocol.endpoints:
+            router.make_router_py(protocol, r, py)
 
     return 0
 
