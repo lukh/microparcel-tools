@@ -34,7 +34,7 @@ in_{{ fp.name|lower }}\
         # {{ leaf.text_1(protocol.bytesize)}}
         # {{ leaf.text_2(protocol.bytesize, protocol.common_fields)}}
         @staticmethod
-        def make{{ leaf.name }}{{subcat}}(\
+        def make{{ leaf.name }}{{subcat}}(self, \
 {# METHOD ARGS#}
 {%- for fp in leaf.fields -%}\
 in_{{ fp.name|lower }}\
@@ -54,8 +54,7 @@ in_{{ fp.name|lower }}\
             msg.set{{ fp.name }}(in_{{ fp.name|lower }})
             {% endfor %}
 
-            return msg;
-        }
+            return msg
 
         {% endfor %}
 
@@ -66,24 +65,27 @@ in_{{ fp.name|lower }}\
 
         {% for leaf in protocol.root_node.leafs(sender, True) %}
         {% if not leaf.subcat %}
-        virtual void process{{ leaf.name }}(\
+        def process{{ leaf.name }}(self, \
 {# METHOD ARGS#}
 {%- for fp in leaf.fields -%}\
-{%- if fp.enum -%} {{ protocol.name }}Msg::{%- endif -%}{{ fp.field_type }} in_{{ fp.name|lower }}\
-{% if not loop.last %}, {% endif %}{%- endfor -%}) = 0;
+in_{{ fp.name|lower }}\
+{% if not loop.last %}, {% endif %}{%- endfor -%}):
         {% else %}
         {% for subcat in leaf.subcat.enum.enumerators %}
-        virtual void process{{ leaf.name }}{{ subcat }}({# METHOD ARGS#}
+        def process{{ leaf.name }}{{ subcat }}(self, \
+{# METHOD ARGS#}
 {%- for fp in leaf.fields -%}\
-{%- if fp.enum -%} {{ protocol.name }}Msg::{%- endif -%}{{ fp.field_type }} in_{{ fp.name|lower }}\
-{% if not loop.last %}, {% endif %}{%- endfor -%}) = 0;
+in_{{ fp.name|lower }}\
+{% if not loop.last %}, {% endif %}{%- endfor -%}):
         {% endfor %}
         {% endif %}
+            raise NotImplementedError
+
         {% endfor %}
 
 
 
-        void process({{ protocol.name }}Msg &in_msg){
+        def process(self, in_msg):
 {% macro walk(node, level) %}
 \
 {# ################# NOT LEAF #}
