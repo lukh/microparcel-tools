@@ -48,7 +48,7 @@ in_{{ fp.name|lower }}\
             {% endfor %}
 
             {# UGLY, SHOULD USE ENUM... #}
-            msg.set{{ leaf.name}}({{ protocol.name }}Msg::{{ leaf.name}}_{{ subcat }})
+            msg.set{{ leaf.name}}({{ protocol.name }}Msg.{{ leaf.name}}.{{ leaf.name}}_{{ subcat }})
 
             {% for fp in leaf.fields %}
             msg.set{{ fp.name }}(in_{{ fp.name|lower }})
@@ -70,6 +70,7 @@ in_{{ fp.name|lower }}\
 {%- for fp in leaf.fields -%}\
 in_{{ fp.name|lower }}\
 {% if not loop.last %}, {% endif %}{%- endfor -%}):
+            raise NotImplementedError
         {% else %}
         {% for subcat in leaf.subcat.enum.enumerators %}
         def process{{ leaf.name }}{{ subcat }}(self, \
@@ -77,9 +78,10 @@ in_{{ fp.name|lower }}\
 {%- for fp in leaf.fields -%}\
 in_{{ fp.name|lower }}\
 {% if not loop.last %}, {% endif %}{%- endfor -%}):
+            raise NotImplementedError
+
         {% endfor %}
         {% endif %}
-            raise NotImplementedError
 
         {% endfor %}
 
@@ -90,16 +92,21 @@ in_{{ fp.name|lower }}\
 \
 {# ################# NOT LEAF #}
 {% if node.children and node.need_process(sender) %}
-{{ level * "    " }}    switch(in_msg.get{{ node.name }}(){
 \
 {% for c in node.children %}
-{{ level * "    " }}        case {{ protocol.name }}Msg::{{ node.name }}_{{ c.name }}:
-{{ walk(c, level + 2) }}
-{{ level * "    " }}            break;
+{{ level * "    " }}    \
+{%if loop.first %}
+if \
+{% elif not loop.last %}
+elif \
+{%else%}
+else \
+{%endif%}
+in_msg.get{{ node.name }}() == {{ protocol.name }}Msg.{{ node.name }}.{{ node.name }}_{{ c.name }}:
+{% if not c.need_process(sender) %}{{ level * "    " }}        pass{% endif %}
+{{ walk(c, level + 1) }}
 
 {% endfor %}
-\
-{{ level * "    " + "    " }}}
 \
 {# ################# LEAF #}
 {% elif node.fields and node.need_process(sender) %}
@@ -111,32 +118,32 @@ in_{{ fp.name|lower }}\
 in_msg.get{{ f.name }}(){% if not loop.last %}, {% endif %}\
 {% endfor %}
 \
-);
+)
 {# ### SUB CAT #}
 {%else%}
-{{ level * "    " + "    " }}switch(msg.get{{ node.subcat.name}}()){
 {% for sc in node.subcat.enum.enumerators %}
-{{ level * "    " + "        " }}case {{protocol.name}}Msg::{{node.subcat.name}}_{{ sc }}:
-{{ level * "    " + "            " }}process{{ node.name }}{{sc}}(\
+{{ level * "    " + "    " }}\
+{%if loop.first %}
+if \
+{% elif not loop.last %}
+elif \
+{%else%}
+else \
+{%endif%}
+msg.get{{ node.subcat.name}}() == {{protocol.name}}Msg.{{node.subcat.name}}.{{node.subcat.name}}_{{ sc }}:
+{{ level * "    " + "        " }}process{{ node.name }}{{sc}}(\
 \
 {% for f in node.fields %}
 in_msg.get{{ f.name }}(){% if not loop.last %}, {% endif %}\
 {% endfor %}
 \
-);
-{{ level * "    " + "            " }}break;
+)
 {% endfor %}
-{{ level * "    " + "        " }}}
 {% endif %}
 {% endif %}
 {# ################# END LEAF #}
 \
 {% endmacro %}
 {{ walk(protocol.root_node, 2) }}
-        }
-};
-
-
-#endif // {{ protocol.name.upper() }}_{{ sender.upper() }}_ROUTER_H
 
 """
