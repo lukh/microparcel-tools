@@ -10,12 +10,21 @@ class {{ protocol.name }}{{ sender }}Router(object):
 {% if not leaf.subcat %}
         @staticmethod
         def make{{ leaf.name }}(\
+{# METHOD COMMON ARGS#}
+{%- for cf in protocol.common_fields -%}\
+in_{{ cf.name|lower }}, \
+{% endfor %}
 {# METHOD ARGS#}
 {%- for fp in leaf.fields -%}\
 in_{{ fp.name|lower }}\
 {% if not loop.last %}, {% endif %}{%- endfor -%}):
 \
             msg = {{ protocol.name }}Msg()
+
+            {# METHOD COMMON ARGS#}
+            {% for cf in protocol.common_fields %}
+            msg.set{{ cf.name }}(in_{{ cf.name|lower }})
+            {% endfor %}
 
             {% for pleaf in leaf.parents() %}
             {# UGLY, SHOULD USE ENUM... #}
@@ -35,12 +44,21 @@ in_{{ fp.name|lower }}\
         # {{ leaf.text_2(protocol.bytesize, protocol.common_fields)}}
         @staticmethod
         def make{{ leaf.name }}{{subcat}}(\
+{# METHOD COMMON ARGS#}
+{%- for cf in protocol.common_fields -%}\
+in_{{ cf.name|lower }}, \
+{% endfor %}
 {# METHOD ARGS#}
 {%- for fp in leaf.fields -%}\
 in_{{ fp.name|lower }}\
 {% if not loop.last %}, {% endif %}{%- endfor -%}):
 \
             msg = {{ protocol.name }}Msg()
+
+            {# METHOD COMMON ARGS#}
+            {% for cf in protocol.common_fields %}
+            msg.set{{ cf.name }}(in_{{ cf.name|lower }})
+            {% endfor %}
 
             {% for pleaf in leaf.parents() %}
             {# UGLY, SHOULD USE ENUM... #}
@@ -66,6 +84,10 @@ in_{{ fp.name|lower }}\
         {% for leaf in protocol.root_node.leafs(sender, True) %}
         {% if not leaf.subcat %}
         def process{{ leaf.name }}(self, \
+{# METHOD COMMON ARGS#}
+{%- for cf in protocol.common_fields -%}\
+in_{{ cf.name|lower }}, \
+{% endfor %}
 {# METHOD ARGS#}
 {%- for fp in leaf.fields -%}\
 in_{{ fp.name|lower }}\
@@ -74,6 +96,10 @@ in_{{ fp.name|lower }}\
         {% else %}
         {% for subcat in leaf.subcat.enum.enumerators %}
         def process{{ leaf.name }}{{ subcat }}(self, \
+{# METHOD COMMON ARGS#}
+{%- for cf in protocol.common_fields -%}\
+in_{{ cf.name|lower }}, \
+{% endfor %}
 {# METHOD ARGS#}
 {%- for fp in leaf.fields -%}\
 in_{{ fp.name|lower }}\
@@ -112,6 +138,10 @@ in_msg.get{{ node.name }}() == {{ protocol.name }}Msg.{{ node.name }}.{{ node.na
 {% if not node.subcat %}
 {{ level * "    " + "    " }}process{{ node.name }}(\
 \
+{# METHOD COMMON ARGS#}
+{%- for cf in protocol.common_fields -%}\
+in_msg.get{{ cf.name }}(), \
+{% endfor %}
 {% for f in node.fields %}
 in_msg.get{{ f.name }}(){% if not loop.last %}, {% endif %}\
 {% endfor %}
@@ -129,6 +159,10 @@ elif \
 msg.get{{ node.subcat.name}}() == {{protocol.name}}Msg.{{node.subcat.name}}.{{node.subcat.name}}_{{ sc }}:
 {{ level * "    " + "        " }}process{{ node.name }}{{sc}}(\
 \
+{# METHOD COMMON ARGS#}
+{%- for cf in protocol.common_fields -%}\
+in_msg.get{{ cf.name }}(), \
+{% endfor %}
 {% for f in node.fields %}
 in_msg.get{{ f.name }}(){% if not loop.last %}, {% endif %}\
 {% endfor %}
