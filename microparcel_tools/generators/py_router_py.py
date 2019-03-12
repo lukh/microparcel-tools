@@ -1,5 +1,5 @@
 template = """\
-import {{ protocol.name }}Msg
+from {{ protocol.name }}Msg import {{ protocol.name }}Msg
 
 class {{ protocol.name }}{{ sender }}Router(object):
         {% for leaf in protocol.root_node.leafs(sender) %}
