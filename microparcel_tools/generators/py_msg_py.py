@@ -3,7 +3,8 @@ from enum import Enum
 import microparcel as mp
 
 class {{ protocol.name }}Msg(mp.Message):
-    super({{ protocol.name }}Msg, self).__init__(size={{ protocol.bytesize}})
+    def __init__(self):
+        super({{ protocol.name }}Msg, self).__init__(size={{ protocol.bytesize}})
 
     # --- Common enums ---
     {% for ce in protocol.common_enums.values() %}
