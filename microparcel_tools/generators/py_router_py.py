@@ -9,7 +9,7 @@ class {{ protocol.name }}{{ sender }}Router(object):
 {# ##############WITHOUT SUBCAT #}
 {% if not leaf.subcat %}
         @staticmethod
-        def make{{ leaf.name }}(self, \
+        def make{{ leaf.name }}(\
 {# METHOD ARGS#}
 {%- for fp in leaf.fields -%}\
 in_{{ fp.name|lower }}\
@@ -34,7 +34,7 @@ in_{{ fp.name|lower }}\
         # {{ leaf.text_1(protocol.bytesize)}}
         # {{ leaf.text_2(protocol.bytesize, protocol.common_fields)}}
         @staticmethod
-        def make{{ leaf.name }}{{subcat}}(self, \
+        def make{{ leaf.name }}{{subcat}}(\
 {# METHOD ARGS#}
 {%- for fp in leaf.fields -%}\
 in_{{ fp.name|lower }}\
@@ -97,10 +97,8 @@ in_{{ fp.name|lower }}\
 {{ level * "    " }}    \
 {%if loop.first %}
 if \
-{% elif not loop.last %}
+{% else %}
 elif \
-{%else%}
-else \
 {%endif%}
 in_msg.get{{ node.name }}() == {{ protocol.name }}Msg.{{ node.name }}.{{ node.name }}_{{ c.name }}:
 {% if not c.need_process(sender) %}{{ level * "    " }}        pass{% endif %}
@@ -125,10 +123,8 @@ in_msg.get{{ f.name }}(){% if not loop.last %}, {% endif %}\
 {{ level * "    " + "    " }}\
 {%if loop.first %}
 if \
-{% elif not loop.last %}
-elif \
 {%else%}
-else \
+elif \
 {%endif%}
 msg.get{{ node.subcat.name}}() == {{protocol.name}}Msg.{{node.subcat.name}}.{{node.subcat.name}}_{{ sc }}:
 {{ level * "    " + "        " }}process{{ node.name }}{{sc}}(\
