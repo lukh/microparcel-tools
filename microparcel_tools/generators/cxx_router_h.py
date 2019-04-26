@@ -117,7 +117,7 @@ class {{ protocol.name }}{{ sender }}Router {
 \
 {# ################# NOT LEAF #}
 {% if node.children and node.need_process(sender) %}
-{{ level * "    " }}    switch(in_msg.get{{ node.name }}(){
+{{ level * "    " }}    switch(in_msg.get{{ node.name }}()){
 \
 {% for c in node.children %}
 {{ level * "    " }}        case {{ protocol.name }}Msg::{{ node.name }}_{{ c.name }}:
