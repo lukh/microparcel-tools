@@ -65,7 +65,7 @@ def main(schema_file, cxx=None, py=None):
     return 0
 
 
-if __name__ == "__main__":
+def cli():
     parser = argparse.ArgumentParser(description='microparcel parser and message generation tool')
     parser.add_argument('schema_file', type=str, help='schema file, in json format')
     parser.add_argument('--cxx', help='C++ output folder')

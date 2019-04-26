@@ -39,7 +39,7 @@ setup(
     description="Code generation tool for microparcel",
     entry_points={
         'console_scripts': [
-            'microparcel_tools=microparcel_tools.cli:main',
+            'microparcel_tools=microparcel_tools.cli:cli',
         ],
     },
     install_requires=requirements,
