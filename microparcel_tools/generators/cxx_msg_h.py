@@ -7,6 +7,10 @@ template = """\
 
 class {{ protocol.name }}Msg: public microparcel::Message<{{ protocol.bytesize}}> {
     public:
+        // --- Protocol Version ---
+        static const uint8_t kProtocolVersionMajor = {{ protocol.version.major }};
+        static const uint8_t kProtocolVersionMinor = {{ protocol.version.minor }};
+
         // --- Common enums ---
         {% for ce in protocol.common_enums.values() %}
         // {{ ce.name }}

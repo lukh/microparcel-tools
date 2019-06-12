@@ -9,6 +9,7 @@ import collections
 def validate_protocol_schema(protocol_schema):
     sch = {
         "name":{"type":"string", "required":True},
+        "version":{"type":"dict", "required":True, 'schema': {'major':{'type': 'integer', "required":True}, 'minor':{'type': 'integer', "required":True}} },
         "endpoints":{"type":"list", "required":True, 'schema': {'type': 'string'}},
         "common_enums":
         {

@@ -3,6 +3,9 @@ from enum import Enum
 import microparcel as mp
 
 class {{ protocol.name }}Msg(mp.Message):
+    PROTOCOL_VERSION_MAJOR = {{ protocol.version.major }}
+    PROTOCOL_VERSION_MINOR = {{ protocol.version.minor }}
+
     def __init__(self):
         super({{ protocol.name }}Msg, self).__init__(size={{ protocol.bytesize}})
 

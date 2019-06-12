@@ -4,6 +4,11 @@ import math
 from .common import FieldEnum, Field, Node
 from .tools import validate_protocol_schema
 
+class ProtocolVersion(object):
+    def __init__(self, major, minor):
+        self.major = major
+        self.minor = minor
+
 class Protocol(object):
     def __init__(self, source_schema):
         # schema validation
@@ -13,6 +18,7 @@ class Protocol(object):
 
         # building the protocol
         self.name = source_schema['name']
+        self.version = ProtocolVersion(**source_schema['version'])
         self.endpoints = source_schema['endpoints']
         
         # common enums and fields
