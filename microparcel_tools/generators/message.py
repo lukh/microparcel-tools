@@ -3,8 +3,8 @@
 import os
 from jinja2 import Template
 
-import cxx_msg_h
-import py_msg_py
+from . import cxx_msg_h
+from . import py_msg_py
 
 def make_message_cxx(protocol, output_dir):
     template = Template(cxx_msg_h.template, trim_blocks=True, lstrip_blocks=True)

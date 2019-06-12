@@ -9,10 +9,10 @@ import logging
 import json
 from jsoncomment import JsonComment
 
-from tools import validate_protocol_schema
-from microparcel_tools import Protocol
+from .tools import validate_protocol_schema
+from .microparcel_tools import Protocol
 
-from generators import message, router
+from .generators import message, router
 
 def main(schema_file, cxx=None, py=None):
     """Generate serialization/deserialization code from schema"""

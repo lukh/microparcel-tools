@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import math
 
-from common import FieldEnum, Field, Node
-from tools import validate_protocol_schema
+from .common import FieldEnum, Field, Node
+from .tools import validate_protocol_schema
 
 class Protocol(object):
     def __init__(self, source_schema):

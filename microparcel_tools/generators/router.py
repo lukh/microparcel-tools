@@ -3,8 +3,8 @@
 import os
 from jinja2 import Template
 
-import cxx_router_h
-import py_router_py
+from . import cxx_router_h
+from . import py_router_py
 
 def make_router_cxx(protocol, router, output_dir):
     template = Template(cxx_router_h.template, trim_blocks=True, lstrip_blocks=True)

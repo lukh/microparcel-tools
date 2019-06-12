@@ -7,4 +7,4 @@ __email__ = 'vivien.henry@outlook.fr'
 __version__ = '0.0.1'
 
 
-from microparcel_tools import Protocol
+from .microparcel_tools import Protocol
