@@ -129,7 +129,7 @@ class {{ protocol.name }}{{ sender }}Router {
 {{ level * "    " + "    " }}}
 \
 {# ################# LEAF #}
-{% elif node.fields and node.need_process(sender) %}
+{% elif node.fields_not_none and node.need_process(sender) %}
 {# ### NOT SUB CAT #}
 {% if not node.subcat %}
 {{ level * "    " + "    " }}process{{ node.name }}(\

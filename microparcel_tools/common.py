@@ -174,6 +174,9 @@ class Node(object):
                 for leaf in c.leafs(sender, all_but_sender):
                     yield leaf
 
+    def fields_not_none(self):
+        return self.fields is not None
+
 
     def build(self, current_offset):
         """
