@@ -99,7 +99,8 @@ class Node(object):
         assert (parent is None or isinstance(parent, Node)), "Parent of {} must be a Node or None".format(name)
         assert (subcat is None or isinstance(subcat, list)), "Subcat of {} must be None or a list of string".format(name)
         assert (children is None) ^ (fields is None), "Node {} can't have both fields and children".format(name)
-
+        assert not ((senders is None) and (children is None))
+        
         self.name = name
 
         self.parent = parent
