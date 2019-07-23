@@ -13,7 +13,8 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     "Cerberus",
-    'jsoncomment'
+    'jsoncomment',
+    'jinja2'
 ]
 
 setup_requirements = [ ]
