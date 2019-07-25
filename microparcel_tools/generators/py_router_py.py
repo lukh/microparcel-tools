@@ -156,8 +156,8 @@ if \
 {%else%}
 elif \
 {%endif%}
-msg.get{{ node.subcat.name}}() == {{protocol.name}}Msg.{{node.subcat.name}}.{{node.subcat.name}}_{{ sc }}:
-{{ level * "    " + "        " }}process{{ node.name }}{{sc}}(\
+in_msg.get{{ node.subcat.name}}() == {{protocol.name}}Msg.{{node.subcat.name}}.{{node.subcat.name}}_{{ sc }}:
+{{ level * "    " + "        " }}self.process{{ node.name }}{{sc}}(\
 \
 {# METHOD COMMON ARGS#}
 {%- for cf in protocol.common_fields -%}\
