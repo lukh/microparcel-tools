@@ -83,7 +83,7 @@ in_{{ fp.name|lower }}\
 
         {% for leaf in protocol.root_node.leafs(sender, True) %}
         {% if not leaf.subcat %}
-        def process{{ leaf.name }}(self, \
+        def process{{ leaf.name }}(self{% if protocol.common_fields|length > 0 or leaf.fields|length > 0 %}, {% endif %}\
 {# METHOD COMMON ARGS#}
 {%- for cf in protocol.common_fields -%}\
 in_{{ cf.name|lower }}, \
@@ -95,7 +95,7 @@ in_{{ fp.name|lower }}\
             raise NotImplementedError
         {% else %}
         {% for subcat in leaf.subcat.enum.enumerators %}
-        def process{{ leaf.name }}{{ subcat }}(self, \
+        def process{{ leaf.name }}{{ subcat }}(self{% if protocol.common_fields|length > 0 or leaf.fields|length > 0 %}, {% endif %}\
 {# METHOD COMMON ARGS#}
 {%- for cf in protocol.common_fields -%}\
 in_{{ cf.name|lower }}, \
