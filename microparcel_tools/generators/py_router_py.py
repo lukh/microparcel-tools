@@ -136,7 +136,7 @@ in_msg.get{{ node.name }}() == {{ protocol.name }}Msg.{{ node.name }}.{{ node.na
 {% elif node.fields_not_none and node.need_process(sender) %}
 {# ### NOT SUB CAT #}
 {% if not node.subcat %}
-{{ level * "    " + "    " }}process{{ node.name }}(\
+{{ level * "    " + "    " }}self.process{{ node.name }}(\
 \
 {# METHOD COMMON ARGS#}
 {%- for cf in protocol.common_fields -%}\
