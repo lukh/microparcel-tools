@@ -3,7 +3,7 @@ template = """\
 #ifndef {{ protocol.name.upper() }}_MSG_H
 #define  {{ protocol.name.upper() }}_MSG_H
 
-#include "microparcel.h"
+#include "microparcel/microparcel.h"
 
 class {{ protocol.name }}Msg: public microparcel::Message<{{ protocol.bytesize}}> {
     public:
