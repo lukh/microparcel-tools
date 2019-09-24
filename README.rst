@@ -3,11 +3,11 @@ Microparcel Tools
 =================
 
 
-.. image:: https://img.shields.io/pypi/v/microparcel_tools.svg
-        :target: https://pypi.python.org/pypi/microparcel_tools
+.. image:: https://img.shields.io/pypi/v/microparcel-tools.svg
+        :target: https://pypi.python.org/pypi/microparcel-tools
 
-.. image:: https://img.shields.io/travis/lukh/microparcel_tools.svg
-        :target: https://travis-ci.org/lukh/microparcel_tools
+.. image:: https://img.shields.io/travis/lukh/microparcel-tools.svg
+        :target: https://travis-ci.org/lukh/microparcel-tools
 
 .. image:: https://readthedocs.org/projects/microparcel-tools/badge/?version=latest
         :target: https://microparcel-tools.readthedocs.io/en/latest/?badge=latest
@@ -26,7 +26,9 @@ Code generation tool for microparcel
 Features
 --------
 
-* TODO
+* Generates a Communication protocol from a schema.
+* Generates C++ and python code
+* Based on microparcel, suitable for embedded systems
 
 Credits
 -------
