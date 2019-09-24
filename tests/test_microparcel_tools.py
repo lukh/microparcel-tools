@@ -22,6 +22,10 @@ class TestMicroparcel_tools(unittest.TestCase):
     def test_standard_small_fields(self):
         schema = {
             "name":"Test",
+            "version":{
+                "major":0,
+                "minor":1,
+            },
             "endpoints":["Master", "Slave"],
             "common_enums":[],
             "common_fields":[],
@@ -61,6 +65,10 @@ class TestMicroparcel_tools(unittest.TestCase):
     def test_standard_small_fields_no_root(self):
         schema = {
             "name":"Test",
+            "version":{
+                "major":0,
+                "minor":1,
+            },
             "endpoints":["Master", "Slave"],
             "common_enums":[],
             "common_fields":[],
@@ -94,6 +102,10 @@ class TestMicroparcel_tools(unittest.TestCase):
     def test_standard_small_fields_odd(self):
         schema = {
             "name":"Test",
+            "version":{
+                "major":0,
+                "minor":1,
+            },
             "endpoints":["Master", "Slave"],
             "common_enums":[],
             "common_fields":[],
@@ -145,6 +157,10 @@ class TestMicroparcel_tools(unittest.TestCase):
     def test_routing(self):
         schema = {
             "name":"Test",
+            "version":{
+                "major":0,
+                "minor":1,
+            },
             "endpoints":["Master", "Slave"],
             "common_enums":[],
             "common_fields":[],
@@ -244,6 +260,10 @@ class TestMicroparcel_tools(unittest.TestCase):
     def test_subcat(self):
         schema = {
             "name":"Test",
+            "version":{
+                "major":0,
+                "minor":1,
+            },
             "endpoints":["Master", "Slave"],
             "common_enums":[],
             "common_fields":[],
@@ -291,6 +311,10 @@ class TestMicroparcel_tools(unittest.TestCase):
     def test_common_fields(self):
         schema = {
             "name":"Test",
+            "version":{
+                "major":0,
+                "minor":1,
+            },
             "endpoints":["Master", "Slave"],
             "common_enums":[
                 {"name":"SpeedUnit", "enumerators":["Knot", "KmPerH"]}
@@ -338,6 +362,10 @@ class TestMicroparcel_tools(unittest.TestCase):
     def test_standard_big_fields_no_root(self):
         schema = {
             "name":"Test",
+            "version":{
+                "major":0,
+                "minor":1,
+            },
             "endpoints":["Master", "Slave"],
             "common_enums":[],
             "common_fields":[],
@@ -373,6 +401,10 @@ class TestMicroparcel_tools(unittest.TestCase):
     def test_standard_big_fields_with_inter_no_root(self):
         schema = {
             "name":"Test",
+            "version":{
+                "major":0,
+                "minor":1,
+            },
             "endpoints":["Master", "Slave"],
             "common_enums":[],
             "common_fields":[],
@@ -416,6 +448,10 @@ class TestMicroparcel_tools(unittest.TestCase):
     def test_standard_big_fields_no_root_common(self):
         schema = {
             "name":"Test",
+            "version":{
+                "major":0,
+                "minor":1,
+            },
             "endpoints":["Master", "Slave"],
             "common_enums":[],
             "common_fields":[
