@@ -16,6 +16,8 @@ To install Microparcel Tools, run this command in your terminal:
 
 This is the preferred method to install Microparcel Tools, as it will always install the most recent stable release.
 
+Install in a virtualenv or as root (not recommended) for access to direct command line tool.
+
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
 

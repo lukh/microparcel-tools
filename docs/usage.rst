@@ -34,7 +34,7 @@ The microparcel_tool generates, in python or C++, source code to generate microp
 
 This piece of Schema will generate
 
-.. code-block:: json
+.. code-block:: console
 
     "name":"Farm",
     "version":{"major":0, "minor":1},
