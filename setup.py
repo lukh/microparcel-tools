@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from microparcel_tools import __version__
+
 """The setup script."""
 
 from setuptools import setup, find_packages
@@ -52,6 +54,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/lukh/microparcel-tools',
-    version='0.0.1',
+    version=__version__,
     zip_safe=False,
 )
