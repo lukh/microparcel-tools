@@ -144,7 +144,7 @@ in_msg.get{{ f.name }}(){% if not loop.last %}, {% endif %}\
 );
 {# ### SUB CAT #}
 {%else%}
-{{ level * "    " + "    " }}switch(msg.get{{ node.subcat.name}}()){
+{{ level * "    " + "    " }}switch(in_msg.get{{ node.subcat.name}}()){
 {% for sc in node.subcat.enum.enumerators %}
 {{ level * "    " + "        " }}case {{protocol.name}}Msg::{{node.subcat.name}}_{{ sc }}:
 {{ level * "    " + "            " }}process{{ node.name }}{{sc}}(\
