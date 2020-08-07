@@ -2,9 +2,10 @@ from math import ceil
 
 
 class FieldEnum(object):
-    def __init__(self, name, enumerators):
+    def __init__(self, name, enumerators, common=False):
         self.name = name
         self.enumerators = enumerators
+        self.common = common
 
     @property
     def named_enumerators(self):

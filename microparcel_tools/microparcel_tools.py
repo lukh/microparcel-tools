@@ -25,7 +25,7 @@ class Protocol(object):
 
         # common enums and fields
         self.common_enums = {
-            args['name']: FieldEnum(**args)
+            args['name']: FieldEnum(common=True, **args)
             for args in source_schema["common_enums"]}
 
         self.common_fields = []

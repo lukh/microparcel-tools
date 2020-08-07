@@ -46,7 +46,7 @@ class {{ protocol.name }}Msg: public microparcel::Message<{{ protocol.bytesize}}
         // {{ f.text_0(protocol.bytesize) }}
         // {{ f.text_1(protocol.bytesize) }}
         // {{ f.text_2(protocol.bytesize) }}
-        {% if f.enum %}
+        {% if f.enum and not f.enum.common %}
         enum {{ f.enum.name }} {
             {% for enumerator in f.enum.named_enumerators %}
             {{ enumerator }} = {{ loop.index - 1 }},
