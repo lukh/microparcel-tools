@@ -1,7 +1,7 @@
 language: python
 python:
-- 3.6
-- 2.7
+- 3.7
+- 3.8
 install: pip install -r requirements_dev.txt
 script: python setup.py test
 deploy:
