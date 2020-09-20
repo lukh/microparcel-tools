@@ -216,6 +216,7 @@ class TestMicroparcel_tools(unittest.TestCase):
         self.assertEqual(p.fields[0].offset, 0)
         self.assertEqual(p.fields[0].bitsize, 2)
         self.assertEqual(p.fields[0].enum.enumerators, ["Message1", "Message2", "Message3"])
+        self.assertFalse(p.fields[0].enum.common)
         
         self.assertEqual(p.fields[1].name, "Message1Field1")
         self.assertEqual(p.fields[1].offset, 2)
@@ -237,6 +238,7 @@ class TestMicroparcel_tools(unittest.TestCase):
         self.assertEqual(p.fields[5].offset, 2)
         self.assertEqual(p.fields[5].bitsize, 1)
         self.assertEqual(p.fields[5].enum.enumerators, ["SubMessage1", "SubMessage2"])
+        self.assertFalse(p.fields[5].enum.common)
 
 
         self.assertEqual(p.fields[6].name, "SubMessage1Field1")
@@ -296,6 +298,7 @@ class TestMicroparcel_tools(unittest.TestCase):
         self.assertEqual(p.fields[1].offset, 1)
         self.assertEqual(p.fields[1].bitsize, 2)
         self.assertEqual(p.fields[1].enum.enumerators, ["Sub1", "Sub2", "Sub3"])
+        self.assertFalse(p.fields[1].enum.common)
 
         self.assertEqual(p.fields[2].offset, 2+1)
         self.assertEqual(p.fields[3].offset, 2+5)
