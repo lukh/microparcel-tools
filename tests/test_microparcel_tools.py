@@ -362,6 +362,65 @@ class TestMicroparcel_tools(unittest.TestCase):
         self.assertEqual(p.fields[1].bitsize, 2)
 
 
+    def test_enums(self):
+        schema = {
+            "name":"Test",
+            "version":{
+                "major":0,
+                "minor":1,
+            },
+            "endpoints":["Master", "Slave"],
+            "common_enums":[
+                {"name":"SpeedUnit", "enumerators":["Knot", "KmPerH", "CmPerSec"]},
+                {"name":"Temperature", "enumerators":["F", "C"]}
+            ],
+
+            "common_fields":[],
+
+            "nodes":{
+                "name":"Root", 
+                "senders":["Slave"],
+                "fields":[
+                    {"name":"Speed", "short_name":"Sp", "enum_name":"SpeedUnit"},
+                    {"name":"Temperature", "short_name":"Te", "enum_name":"Temperature"},
+                    {"name":"Sensor", "short_name":"Se", "enumerators":["Kitchen", "Garden", "LivingRoom", "BathRoom", "Office"]}
+                ]
+            }
+        }
+
+
+        p = mp.Protocol(schema)
+
+        # self.assertEqual(p.bytesize, 3)
+
+        ## COMMONS
+        speedunit_enum = p.common_enums["SpeedUnit"]
+        self.assertEqual(speedunit_enum.enumerators, ["Knot", "KmPerH", "CmPerSec"])
+        self.assertTrue(speedunit_enum.common)
+
+        tempunit_enum = p.common_enums["Temperature"]
+        self.assertEqual(tempunit_enum.enumerators, ["F", "C"])
+        self.assertTrue(tempunit_enum.common)
+
+        self.assertEqual(p.fields[0].name, "RootSpeed")
+        self.assertEqual(p.fields[0].offset, 0)
+        self.assertEqual(p.fields[0].bitsize, 2)
+        self.assertEqual(p.fields[0].enum, speedunit_enum)
+
+
+        self.assertEqual(p.fields[1].name, "RootTemperature")
+        self.assertEqual(p.fields[1].offset, 2)
+        self.assertEqual(p.fields[1].bitsize, 1)
+        self.assertEqual(p.fields[1].enum, tempunit_enum)
+
+
+
+        self.assertEqual(p.fields[2].name, "RootSensor")
+        self.assertEqual(p.fields[2].offset, 3)
+        self.assertEqual(p.fields[2].bitsize, 3)
+        self.assertEqual(p.fields[2].enum.enumerators, ["Kitchen", "Garden", "LivingRoom", "BathRoom", "Office"])
+        self.assertFalse(p.fields[2].enum.common)
+
     def test_standard_big_fields_no_root(self):
         schema = {
             "name":"Test",
